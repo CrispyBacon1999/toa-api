@@ -1,4 +1,5 @@
-import { ISerializable } from './ISerializable';
+import { ISerializable } from "./ISerializable";
+import StationStatus from "./types/StationStatus";
 export default class MatchParticipant implements ISerializable {
     private _matchParticipantKey;
     private _matchKey;
@@ -20,8 +21,8 @@ export default class MatchParticipant implements ISerializable {
     set teamNumber(value: number);
     get station(): number;
     set station(value: number);
-    get stationStatus(): number;
-    set stationStatus(value: number);
+    get stationStatus(): StationStatus;
+    set stationStatus(value: StationStatus);
     get refStatus(): number;
     set refStatus(value: number);
 }

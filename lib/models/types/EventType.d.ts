@@ -12,4 +12,6 @@ declare enum EventType {
     WorldChamp = "WRLDCMP",
     Other = "OTHER"
 }
+export declare const enumerate: (eventType: "Unknown" | "LeagueChampionship" | "LeagueMeet" | "OffSeason" | "Qualifier" | "RegionChampionship" | "Scrimmage" | "SpringEvent" | "SuperQual" | "SuperRegional" | "WorldChamp" | "Other") => EventType;
+export declare const stringify: (eventType: EventType) => "Unknown" | "LeagueChampionship" | "LeagueMeet" | "OffSeason" | "Qualifier" | "RegionChampionship" | "Scrimmage" | "SpringEvent" | "SuperQual" | "SuperRegional" | "WorldChamp" | "Other";
 export default EventType;

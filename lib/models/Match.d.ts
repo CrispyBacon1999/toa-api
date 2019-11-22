@@ -1,7 +1,7 @@
-import { ISerializable } from './ISerializable';
-import MatchDetails from './MatchDetails';
-import MatchParticipant from './MatchParticipant';
-import Event from './Event';
+import { ISerializable } from "./ISerializable";
+import MatchDetails from "./MatchDetails";
+import MatchParticipant from "./MatchParticipant";
+import Event from "./Event";
 export default class Match implements ISerializable {
     private _matchKey;
     private _eventKey;

@@ -8,8 +8,8 @@ export default class AwardRecipient implements ISerializable {
     private _teamKey;
     private _receiverName;
     private _awardName;
-    private _award?;
-    private _team?;
+    private _award;
+    private _team;
     constructor();
     toJSON(): object;
     fromJSON(json: any): AwardRecipient;

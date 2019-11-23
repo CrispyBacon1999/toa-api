@@ -18,5 +18,3 @@ test("api_connection", () => {
       fail(err);
     });
 });
-
-test("docs", () => {});

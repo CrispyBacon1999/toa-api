@@ -1,10 +1,18 @@
-import { ISerializable } from '../ISerializable';
+import { ISerializable } from "../ISerializable";
 
 export enum Stone {
-  'NONE',
-  'STONE',
-  'SKYSTONE'
+  UNKNOWN = -1,
+  NONE = 0,
+  STONE = 1,
+  SKYSTONE = 2
 }
+
+const StoneMapping = {
+  [Stone.UNKNOWN]: -1,
+  [Stone.NONE]: 0,
+  [Stone.STONE]: 1,
+  [Stone.SKYSTONE]: 2
+};
 
 export default class SkystoneAllianceDetails implements ISerializable {
   private _autoStone1: Stone;
@@ -46,12 +54,12 @@ export default class SkystoneAllianceDetails implements ISerializable {
   private _penalty: number;
 
   constructor() {
-    this._autoStone1 = null;
-    this._autoStone2 = null;
-    this._autoStone3 = null;
-    this._autoStone4 = null;
-    this._autoStone5 = null;
-    this._autoStone6 = null;
+    this._autoStone1 = Stone.UNKNOWN;
+    this._autoStone2 = Stone.UNKNOWN;
+    this._autoStone3 = Stone.UNKNOWN;
+    this._autoStone4 = Stone.UNKNOWN;
+    this._autoStone5 = Stone.UNKNOWN;
+    this._autoStone6 = Stone.UNKNOWN;
     this._autoDeliveredSkystones = -1;
     this._autoDeliveredStones = -1;
     this._autoReturned = -1;
@@ -87,12 +95,12 @@ export default class SkystoneAllianceDetails implements ISerializable {
 
   toJSON(): object {
     return {
-      auto_stone_1: Stone[this.autoStone1],
-      auto_stone_2: Stone[this.autoStone1],
-      auto_stone_3: Stone[this.autoStone1],
-      auto_stone_4: Stone[this.autoStone1],
-      auto_stone_5: Stone[this.autoStone1],
-      auto_stone_6: Stone[this.autoStone1],
+      auto_stone_1: this.stoneToInt(this.autoStone1),
+      auto_stone_2: this.stoneToInt(this.autoStone1),
+      auto_stone_3: this.stoneToInt(this.autoStone1),
+      auto_stone_4: this.stoneToInt(this.autoStone1),
+      auto_stone_5: this.stoneToInt(this.autoStone1),
+      auto_stone_6: this.stoneToInt(this.autoStone1),
       auto_delivered_skystones: this.autoDeliveredSkystones,
       auto_delivered_stones: this.autoDeliveredStones,
       auto_returned: this.autoReturned,
@@ -132,7 +140,7 @@ export default class SkystoneAllianceDetails implements ISerializable {
   }
 
   fromJSON(json: any): SkystoneAllianceDetails {
-    const alliance: SkystoneAllianceDetails  = new SkystoneAllianceDetails();
+    const alliance: SkystoneAllianceDetails = new SkystoneAllianceDetails();
     alliance.autoStone1 = this.intToStone(json.auto_stone_1);
     alliance.autoStone2 = this.intToStone(json.auto_stone_2);
     alliance.autoStone3 = this.intToStone(json.auto_stone_3);
@@ -174,7 +182,11 @@ export default class SkystoneAllianceDetails implements ISerializable {
   }
 
   intToStone(num: number): Stone {
-    return Stone[Object.keys(Stone).find(x => Stone[x] === num)];
+    return num;
+  }
+
+  stoneToInt(stone: Stone): number {
+    return StoneMapping[stone];
   }
 
   get autoStone1(): Stone {

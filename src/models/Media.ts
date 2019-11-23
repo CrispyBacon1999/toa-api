@@ -1,5 +1,12 @@
 import { ISerializable } from "./ISerializable";
-import { MediaTypeTeam, MediaTypeEvent } from "./types/MediaType";
+import {
+  MediaTypeTeam,
+  MediaTypeEvent,
+  numberToTeamMedia,
+  numberToEventMedia,
+  teamMediaToNumber,
+  eventMediaToNumber
+} from "./types/MediaType";
 
 export default class Media implements ISerializable {
   private _mediaKey: string;
@@ -14,18 +21,26 @@ export default class Media implements ISerializable {
     this._mediaKey = "";
     this._eventKey = "";
     this._teamKey = "";
-    this._mediaType = -1;
+    this._mediaType = MediaTypeTeam.Unknown;
     this._isPrimary = false;
     this._mediaTitle = "";
     this._mediaLink = "";
   }
 
   toJSON(): object {
+    let m_type: MediaTypeTeam | MediaTypeEvent = MediaTypeTeam.Unknown;
+    if (this.teamKey !== "" || this.teamKey !== undefined) {
+      m_type = teamMediaToNumber(this.mediaType as MediaTypeTeam);
+    } else if (this.eventKey !== "" || this.eventKey !== undefined) {
+      m_type = eventMediaToNumber(this.mediaType as MediaTypeEvent);
+    } else {
+      m_type = -1;
+    }
     return {
       media_key: this.mediaKey,
       event_key: this.eventKey,
       team_key: this.teamKey,
-      media_type: this.mediaType,
+      media_type: m_type,
       is_primary: this.isPrimary,
       title: this.mediaTitle,
       link: this.mediaLink
@@ -34,10 +49,16 @@ export default class Media implements ISerializable {
 
   fromJSON(json: any): Media {
     const award: Media = new Media();
+    if (this.teamKey !== "") {
+      award.mediaType = numberToTeamMedia(json.media_type);
+    } else if (this.teamKey !== "") {
+      award.mediaType = numberToEventMedia(json.media_type);
+    } else {
+      award.mediaType = MediaTypeTeam.Unknown;
+    }
     award.mediaKey = json.media_key;
     award.eventKey = json.event_key;
     award.teamKey = json.team_key;
-    award.mediaType = json.media_type;
     award.isPrimary = json.is_primary;
     award.mediaTitle = json.title;
     award.mediaLink = json.link;

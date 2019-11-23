@@ -27,10 +27,12 @@ const api_endpoint = "https://theorangealliance.com/api";
 class API {
   private _api_key: string;
   private _app_name: string;
+  private _proxy: HttpsProxy | undefined;
 
-  constructor(api_key: string, application_name: string) {
+  constructor(api_key: string, application_name: string, proxy?: HttpsProxy) {
     this._api_key = api_key;
     this._app_name = application_name;
+    this._proxy = proxy;
   }
 
   headers(): HTTPHeaders {
@@ -41,17 +43,105 @@ class API {
     };
   }
 
-  async fetch<T>(url: string): Promise<T> {
+  async fetch(url: string, query?: any): Promise<string> {
     if (url.charAt(0) !== "/") {
       // If there is no leading slash, add one
       url = "/" + url;
     }
 
-    return await axios.get(api_endpoint + url, { headers: this.headers() });
+    return await axios.get(api_endpoint + url, {
+      headers: this.headers(),
+      proxy: this._proxy,
+      params: query
+    });
+  }
+
+  private jsonToObj<T extends ISerializable>(
+    c: new () => T,
+    response_data: string
+  ): T {
+    let res: any = JSON.parse(response_data);
+    let x = new c().fromJSON(res) as T;
+    return x;
+  }
+
+  private arrToObj<T extends ISerializable>(
+    c: new () => T,
+    response_data: string
+  ): T[] {
+    let res: [any] = JSON.parse(response_data);
+    let x = res.map(value => new c().fromJSON(res) as T);
+    return x;
   }
 
   async getAPI(): Promise<string> {
-    return await this.fetch<string>("/");
+    return await this.fetch("/");
+  }
+  async getDocs(): Promise<string> {
+    console.warn("This method isn't implemented in the API yet.");
+    return "";
+  }
+  async getDocsGet(): Promise<string> {
+    console.warn("This method isn't implemented in the API yet.");
+    return "";
+  }
+  async getDocsPost(): Promise<string> {
+    console.warn("This method isn't implemented in the API yet.");
+    return "";
+  }
+  async getDocsPut(): Promise<string> {
+    console.warn("This method isn't implemented in the API yet.");
+    return "";
+  }
+  async getDocsModels(): Promise<string> {
+    console.warn("This method isn't implemented in the API yet.");
+    return "";
+  }
+  async getSeasons(): Promise<Season[]> {
+    return this.arrToObj(Season, await this.fetch("/seasons"));
+  }
+  async getRegions(): Promise<Region[]> {
+    return this.arrToObj(Region, await this.fetch("/regions"));
+  }
+  async getLeagues(): Promise<League[]> {
+    return this.arrToObj(League, await this.fetch("/leagues"));
+  }
+  async getStreams(): Promise<EventLiveStream[]> {
+    return this.arrToObj(EventLiveStream, await this.fetch("/streams"));
+  }
+
+  // /api/event
+  async getEvents({
+    league_key,
+    region_key,
+    season_key,
+    type
+  }: {
+    league_key?: string;
+    region_key?: string;
+    season_key?: string;
+    type?: string;
+  } = {}): Promise<Event[]> {
+    return this.arrToObj(
+      Event,
+      await this.fetch("/event/", {
+        league_key: league_key,
+        region_key: region_key,
+        season_key: season_key,
+        type: type
+      })
+    );
+  }
+  async getEventCount(): Promise<number> {
+    let x = await this.fetch("/event/size");
+    let y: { result: number } = JSON.parse(x);
+    return y.result;
+  }
+  async getEvent(eventKey: string): Promise<Event> {
+    return this.arrToObj(Event, await this.fetch(`/event/${eventKey}`))[0];
+  }
+  async getEventMatches(eventKey: string): Promise<Match[]> {
+    return this.arrToObj(Match, await this.fetch(`/event/${eventKey}/matches`));
   }
   async getEventMatchDetails(eventKey: string): Promise<MatchDetails[]> {
     return this.arrToObj(

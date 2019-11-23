@@ -1,7 +1,5 @@
 import axios from "axios";
 import HTTPHeaders from "./util/HTTPHeaders";
-<<<<<<< 84eb8c74041e39137e41f1c5c9f712a7593bf953
-=======
 import HttpsProxy from "./util/HttpsProxy";
 import {
   Season,
@@ -23,7 +21,6 @@ import {
   LeagueDiv
 } from "./models";
 import { ISerializable } from "./models/ISerializable";
->>>>>>> Add all GET endpoints
 
 const api_endpoint = "https://theorangealliance.com/api";
 
@@ -56,8 +53,6 @@ class API {
   async getAPI(): Promise<string> {
     return await this.fetch<string>("/");
   }
-<<<<<<< 84eb8c74041e39137e41f1c5c9f712a7593bf953
-=======
   async getEventMatchDetails(eventKey: string): Promise<MatchDetails[]> {
     return this.arrToObj(
       MatchDetails,
@@ -222,7 +217,6 @@ class API {
   async getLeagueDivisions(): Promise<LeagueDiv[]> {
     return this.arrToObj(LeagueDiv, await this.fetch(`/league/divisions`));
   }
->>>>>>> Add all GET endpoints
 }
 
 export default API;

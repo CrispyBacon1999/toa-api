@@ -4,7 +4,7 @@ import Ranking from "./Ranking";
 import AwardRecipient from "./AwardRecipient";
 import EventParticipant from "./EventParticipant";
 import Alliance from "./Alliance";
-import EventType from "./types/EventType";
+import EventType, { stringify, enumerate } from "./types/EventType";
 
 export default class Event implements ISerializable {
   private _eventKey: string;
@@ -89,7 +89,7 @@ export default class Event implements ISerializable {
       region_key: this.regionKey,
       league_key: this.leagueKey,
       event_code: this.eventCode,
-      event_type_key: EventType[this.eventTypeKey],
+      event_type_key: stringify(this.eventTypeKey),
       division_key: this.divisionKey,
       division_name: this.divisionName,
       first_event_code: this.firstEventCode,
@@ -122,9 +122,7 @@ export default class Event implements ISerializable {
     event.eventCode = json.event_code;
     event.eventRegionNumber = parseInt(json.event_region_number, 10);
     event.divisionKey = json.division_key;
-    event.eventTypeKey = Object.keys(EventType).find(
-      (x: string) => EventType[x] === json.eventTypeKey
-    ) as keyof typeof EventType;
+    event.eventTypeKey = enumerate(json.eventTypeKey);
     event.firstEventCode = json.first_event_code;
     event.eventName = json.event_name;
     event.divisionName = json.division_name;

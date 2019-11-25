@@ -12,11 +12,9 @@ test("api_connection", () => {
     .getAPI()
     .then((version: string) => {
       console.log(version);
-      expect(version).toEqual("v1");
+      expect(version.split(".").length).toEqual(3);
     })
     .catch(err => {
       fail(err);
     });
 });
-
-test("docs", () => {});

@@ -1,47 +1,56 @@
-import { ISerializable } from './ISerializable';
+import { ISerializable } from "./ISerializable";
+import StationStatus, {
+  numberToStationStatus,
+  stationStatusToNumber
+} from "./types/StationStatus";
+import MatchStations, {
+  numberToStation,
+  stationToNumber
+} from "./types/MatchStations";
+import RefStatus, { numberToRef, refToNumber } from "./types/RefStatus";
 
 export default class MatchParticipant implements ISerializable {
- private _matchParticipantKey: string;
- private _matchKey: string;
- private _teamKey: string;
- private _teamNumber: number;
- private _station: number;
- private _stationStatus: number;
- private _refStatus: number;
+  private _matchParticipantKey: string;
+  private _matchKey: string;
+  private _teamKey: string;
+  private _teamNumber: number;
+  private _station: MatchStations;
+  private _stationStatus: StationStatus;
+  private _refStatus: RefStatus;
 
- constructor() {
-   this._matchParticipantKey = '';
-   this._matchKey = '';
-   this._teamKey = '';
-   this._teamNumber = -1;
-   this._station = 0;
-   this._stationStatus = 0;
-   this._refStatus = 0;
- }
+  constructor() {
+    this._matchParticipantKey = "";
+    this._matchKey = "";
+    this._teamKey = "";
+    this._teamNumber = -1;
+    this._station = MatchStations.Unknown;
+    this._stationStatus = StationStatus.Unknown;
+    this._refStatus = 0;
+  }
 
- toJSON(): object {
-   return {
-     match_participant_key: this.matchParticipantKey,
-     match_key: this.matchKey,
-     team_key: this.teamKey,
-     team_number: this.teamNumber,
-     station: this.station,
-     station_status: this.stationStatus,
-     ref_status: this.refStatus
-   };
- }
+  toJSON(): object {
+    return {
+      match_participant_key: this.matchParticipantKey,
+      match_key: this.matchKey,
+      team_key: this.teamKey,
+      team_number: this.teamNumber,
+      station: stationToNumber(this.station),
+      station_status: stationStatusToNumber(this.stationStatus),
+      ref_status: refToNumber(this.refStatus)
+    };
+  }
 
- fromJSON(json: any): MatchParticipant {
-   const participant: MatchParticipant = new MatchParticipant();
-   participant.matchParticipantKey = json.match_participant_key;
-   participant.matchKey = json.match_key;
-   participant.teamKey = json.team_key;
-   participant.teamNumber = json.team_number;
-   participant.station = json.station;
-   participant.stationStatus = json.station_status;
-   participant.refStatus = json.ref_status;
-   return participant;
- }
+  fromJSON(json: any): MatchParticipant {
+    const participant: MatchParticipant = new MatchParticipant();
+    participant.matchParticipantKey = json.match_participant_key;
+    participant.matchKey = json.match_key;
+    participant.teamKey = json.team_key;
+    participant.teamNumber = json.team_number;
+    participant.station = numberToStation(json.station);
+    participant.stationStatus = numberToStationStatus(json.station_status);
+    participant.refStatus = numberToRef(json.ref_status);
+    return participant;
+  }
 
   get matchParticipantKey(): string {
     return this._matchParticipantKey;
@@ -83,11 +92,11 @@ export default class MatchParticipant implements ISerializable {
     this._station = value;
   }
 
-  get stationStatus(): number {
+  get stationStatus(): StationStatus {
     return this._stationStatus;
   }
 
-  set stationStatus(value: number) {
+  set stationStatus(value: StationStatus) {
     this._stationStatus = value;
   }
 

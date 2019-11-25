@@ -1,4 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
+import fetch from "node-fetch";
+import * as qs from "qs";
 import HTTPHeaders from "./util/HTTPHeaders";
 import HttpsProxy from "./util/HttpsProxy";
 import {
@@ -22,7 +24,7 @@ import {
 } from "./models";
 import { ISerializable } from "./models/ISerializable";
 
-const api_endpoint = "https://theorangealliance.com/api";
+const api_endpoint = "https://theorangealliance.org/api";
 
 class API {
   private _api_key: string;
@@ -49,11 +51,25 @@ class API {
       url = "/" + url;
     }
 
-    return await axios.get(api_endpoint + url, {
-      headers: this.headers(),
-      proxy: this._proxy,
-      params: query
-    });
+    let query_params: string = qs.stringify(query);
+    if (query_params.length !== 0) {
+      query_params = "?" + query_params;
+    }
+
+    let data = fetch(api_endpoint + url + query_params, {
+      headers: this.headers()
+    })
+      .then(res => res.text())
+      .catch(err => {
+        throw new Error(err);
+      });
+    return await data;
+
+    // return await axios.get(api_endpoint + url, {
+    //   headers: this.headers(),
+    //   proxy: this._proxy,
+    //   params: query
+    // });
   }
 
   private jsonToObj<T extends ISerializable>(
@@ -75,7 +91,9 @@ class API {
   }
 
   async getAPI(): Promise<string> {
-    return await this.fetch("/");
+    let res = await this.fetch("/");
+    let version: { version: string } = JSON.parse(res);
+    return version.version;
   }
   async getDocs(): Promise<string> {
     console.warn("This method isn't implemented in the API yet.");
